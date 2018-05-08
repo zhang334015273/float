@@ -1,0 +1,152 @@
+<!DOCTYPE>
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title></title>
+<script type="text/javascript" src="js/jquery.min.js"></script></head>
+
+<body>
+    <div id="panel" style="background-color: #000000">
+        <div id="circle" style="background-color: #ffffff;display: none;position: relative;"></div>
+    </div>
+    <script type="text/javascript">
+        //刷新定位
+        function refresh(){
+            
+            $("#circle").css("top",mTop);
+            $("#circle").css("left",mLeft);
+        }
+
+        //面板的大小
+        var divWidth = 800;
+        var divHeight = 600;
+        $("#panel").width(divWidth);
+        $("#panel").height(divHeight);
+
+        //球的坐标
+        var mTop = 0;
+        var mLeft = Math.random()*600;
+        //上一次的位置
+        var preTop = mTop;
+        var preLeft = mLeft;
+        var circleWidth = 10;
+        $("#circle").width(circleWidth);
+        $("#circle").height(circleWidth);
+        $("#circle").css("border-radius",circleWidth/2);
+
+        //初始化角度弧度制
+        var angle = Math.random()*Math.PI;
+        //单位移动的距离 px
+        var moveLenth = 10;
+        //移动速度 每秒移动几个单位距离
+        var moveSpeed = 100;
+        //从那个边移动的 上下左右 对于 1234
+        var moveLine = 1;
+        //移动方向的变化   0:顺时针  1：逆时针
+        var moveStyle = 0;
+
+
+
+        function moveFromTop(){
+            preTop = mTop;
+            preLeft = mLeft;
+            mTop = mTop + (moveLenth * Math.sin(angle));
+            mLeft =  moveStyle ==0 ? mLeft + (moveLenth * Math.cos(angle)) : mLeft - (moveLenth * Math.cos(angle));
+
+            refresh();
+        }
+
+        function moveFromRight(){
+            preTop = mTop;
+            preLeft = mLeft;
+            mTop = moveStyle ==0 ? mTop + (moveLenth * Math.cos(angle)) : mTop - (moveLenth * Math.cos(angle));
+            mLeft = mLeft - (moveLenth * Math.sin(angle));
+            refresh();
+        }
+
+        function moveFromBottom(){
+            preTop = mTop;
+            preLeft = mLeft;
+            mTop = mTop - (moveLenth * Math.sin(angle));
+            mLeft = moveStyle ==0 ? mLeft - (moveLenth * Math.cos(angle)) : mLeft + (moveLenth * Math.cos(angle));
+            refresh();
+        }
+
+        function moveFromLeft(){
+            preTop = mTop;
+            preLeft = mLeft;
+            mTop = moveStyle ==0 ? mTop - (moveLenth * Math.cos(angle)) : mTop + (moveLenth * Math.cos(angle));
+            mLeft = mLeft + (moveLenth * Math.sin(angle));
+            refresh();
+        }
+
+        function moveTrun(){
+            //console.info("left = " +mLeft + ", top =" + mTop);
+            if(mTop <= 0){
+                if(preLeft > mLeft){
+                    moveStyle = 1;
+                }else{
+                    moveStyle = 0;
+                }
+                moveLine = 1;
+            }
+            if(mTop >= divHeight){
+                if(preLeft > mLeft){
+                    moveStyle = 0;
+                }else{
+                    moveStyle = 1;
+                }
+                moveLine = 2;
+            }
+            if(mLeft <= 0){
+                if(preTop > mTop){
+                    moveStyle = 0;
+                }else{
+                    moveStyle = 1;
+                }
+                moveLine = 3;
+            }
+            if(mLeft >= divWidth){
+                if(preTop > mTop){
+                    moveStyle = 1;
+                }else{
+                    moveStyle = 0;
+                }
+                moveLine = 4;
+            }
+        }
+
+        function startMove(){
+            setInterval(function(){
+                switch(moveLine){
+                    case 1:
+                        moveFromTop();
+                        break;
+                    case 2:
+                        moveFromBottom();
+                        break;
+                    case 3:
+                        moveFromLeft();
+                        break;
+                    default :
+                        moveFromRight();
+                }
+
+                moveTrun();
+
+
+            },1000/moveSpeed);
+
+        }
+
+
+
+        $(document).ready(function(){
+            refresh();
+            $("#circle").show();
+            startMove();
+
+
+        });
+    </script>
+</body>
+</html>
